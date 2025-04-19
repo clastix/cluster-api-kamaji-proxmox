@@ -1,0 +1,36 @@
+{{/*
+This creates ProxmoxMachineTemplate resources for each nodePool defined in values.yaml.
+
+Context Passing Mechanism:
+1. The range loop ({{- range .Values.nodePools }}) iterates through each nodePool.
+2. Inside the loop, the context (.) changes to represent the current nodePool item.
+3. We use (dict "nodePool" . "Global" $) to create a new context dictionary:
+   - "nodePool": Contains the current nodePool item from the loop
+   - "Global": Contains the root template context ($) with access to all values
+4. This dictionary becomes the context (.) inside the included template
+
+Example context being passed:
+- .nodePool = Current nodePool object with properties like diskGiB, memoryMiB
+- .Global = Root context with access to $.Values, $.Release, etc.
+
+Inside the template, we can access:
+- Node pool specific values
+- Global values
+
+The indent 6 ensures proper YAML formatting under spec.template.spec
+*/}}
+
+{{- range .Values.nodePools }}
+---
+kind: ProxmoxMachineTemplate
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha1
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ }}-{{ .name }}-proxmox-machine-template-{{ include "ProxmoxMachineTemplateHash" (dict "nodePool" . "Global" $) }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  template:
+    spec:
+{{ include "ProxmoxMachineTemplateSpec" (dict "nodePool" . "Global" $) | indent 6 }}
+{{- end }}

@@ -1,0 +1,14 @@
+{{- range .Values.nodePools }}
+---
+kind: KubeadmConfigTemplate
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ }}-{{ .name }}-kubeadmconfig-{{ include "kubeadmConfigTemplateHash" (dict "nodePool" .) }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  template:
+    spec:
+{{ include "kubeadmConfigTemplateSpec" (dict "nodePool" .) | indent 6 }}
+{{- end }}

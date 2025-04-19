@@ -1,0 +1,22 @@
+name: Lint
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.3.4
+
+      - name: Linting Chart
+        run: helm lint ./charts/capi-kamaji-proxmox

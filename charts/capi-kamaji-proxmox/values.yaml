@@ -1,0 +1,170 @@
+proxmox:
+  # -- Create a secret with the Proxmox VE credentials
+  secret:
+    # -- Specifies whether credentials secret should be created from config values
+    create: true
+    # -- The name of an existing credentials secret for Proxmox VE. 
+    name: proxmox-secret
+  # -- Proxmox VE hostname or IP address
+  url: https://proxmox.pve:8006
+  # -- Proxmox VE TokenID for authentication
+  tokenId: 'clastix@pam!capi'
+  # -- Proxmox VE TokenSecret for authentication
+  tokenSecret: READCTED
+
+ipamProvider:
+  # -- Enable the IPAMProvider usage
+  enabled: true
+  # -- IPAMProvider ranges
+  ranges:
+    - "192.168.100.10-192.168.100.250"
+  # -- IPAMProvider prefix
+  prefix: "24"
+  # -- IPAMProvider gateway
+  gateway: "192.168.100.1"
+
+cluster:
+  # -- Cluster name. If unset, the release name will be used
+  name: ""
+  controlPlane:
+    # -- Labels to add to the control plane
+    labels:
+      cni: calico
+    # -- Number of control plane replicas
+    replicas: 2
+    # -- KamajiControlPlane dataStoreName
+    dataStoreName: default
+    addons:
+      # -- KamajiControlPlane coreDNS configuration
+      coreDNS: {}
+      # -- KamajiControlPlane kube-proxy configuration
+      kubeProxy: {}
+      # -- KamajiControlPlane konnectivity configuration
+      konnectivity: {}
+    kubelet:
+      # -- kubelet cgroupfs configuration
+      cgroupfs: systemd
+      # -- kubelet preferredAddressTypes order
+      preferredAddressTypes:
+        - InternalIP
+        - ExternalIP
+        - Hostname
+    network:
+      # -- Ingress configuration (optional)
+      # ingress: {}
+      # -- Type of service used to expose the Kubernetes API server
+      serviceType: LoadBalancer
+      # -- Address used to expose the Kubernetes API server. If not set, the service will be exposed on the first available address.
+      # serviceAddress: "10.10.10.120"
+      # When using MetalLB to expose the Control Plane, set as the following to specify a specific IP address for the service
+      # serviceAnnotations:
+      #   metallb.universe.tf/loadBalancerIPs: "10.10.10.120"
+      # -- Labels to use for the control plane service
+      serviceLabels: {}
+      # -- List of additional Subject Alternative Names to use for the API Server serving certificate
+      certSANs: []
+    # -- Kubernetes version
+    version: v1.31.4
+  # -- Proxmox VE nodes used for VM deployments
+  allowedNodes:
+  - labs
+  credentialsRef:
+    # -- Proxmox VE credentials secret name
+    name: sample-proxmox-secret
+    # -- Proxmox VE credentials secret namespace
+    namespace: default
+  # -- List of nameservers used by the machines
+  dnsServers:
+    - 8.8.8.8
+  # -- IPv4Config contains information about address pool
+  ipv4Config:
+    # -- Proxmox VE machines address pool
+    addresses: 
+    - 192.168.100.10
+    # -- Proxmox VE machines gateway
+    gateway: 192.168.100.1
+    # -- Proxmox VE machines prefix
+    prefix: 24
+  metrics:
+    # -- Enable metrics collection. ServiceMonitor custom resource definition must be installed on the Management cluster.
+    enabled: false
+    # -- ServiceAccount for scraping metrics
+    serviceAccount:
+      # -- ServiceAccount name used for scraping metrics
+      name: kube-prometheus-stack-prometheus
+      # -- ServiceAccount namespace
+      namespace: monitoring-system
+
+nodePools:
+  - name: default
+    # -- Number of worker VMs instances
+    replicas: 1
+    autoscaling:
+      # -- Enable autoscaling
+      enabled: false
+      labels:
+        # -- Labels to use for autoscaling: make sure to use the same labels on the autoscaler configuration
+        autoscaling: "enabled"
+      # -- Minimum number of instances in the pool
+      minSize: "1"
+      # -- Maximum number of instances in the pool
+      maxSize: "6"
+    # -- Proxmox VE node that hosts the VM template to be used to provision VMs
+    sourceNode: pve
+    # -- Proxmox VE nodes used for VM deployments
+    allowedNodes:
+      - labs
+    # -- Proxmox VE resource pool to use
+    pool: ""
+    # -- Proxmox VE template ID to clone
+    templateId: 100
+    # # -- Proxmox VE template selector
+    # TemplateSelector:
+    #   # -- Proxmox VE template match tags
+    #   matchTags:
+    #     - "ubuntu-nobe-kube-1.31.4"
+    # -- Proxmox VE default network for VMs
+    network:
+      # -- Proxmox VE network bridge to use
+      bridge: vmbr0
+      # -- Proxmox VE network interface model to use
+      model: virtio
+      # -- Proxmox VE network interface dns servers. Overrides the setting in ProxmoxCluster
+      dnsServers:
+      - "8.8.8.8"
+      # -- Use an IPAMProvider pool to reserve IPs
+      addressesFromPools:
+        # -- Enable the IPAMProvider usage
+        enabled: true
+    # -- Proxmox VE storage name for full clone
+    storage: local
+    # -- Proxmox VE disk format
+    format: qcow2
+    # -- Proxmox VE disk configuration
+    disks:
+      # -- Proxmox VE disk for the boot volume
+      bootVolume:
+        # -- Proxmox VE disk bus type
+        disk: scsi0
+        # -- Proxmox VE disk size in GB. The disk size must be greater than the template disk size
+        sizeGb: 25
+    # -- Memory to allocate to worker VMs
+    memoryMiB: 8192
+    # -- Number of cores to allocate to worker VMs
+    numCores: 2
+    # -- Number of sockets to allocate to worker VMs
+    numSockets: 2
+    # -- Additional cloud-init files to pass to the machines
+    # additionalCloudInitFiles: |
+    #   #cloud-config
+    #   timezone: Europe/Rome
+    # -- users to create on machines
+    users:
+    - name: clastix
+      sshAuthorizedKeys: []
+      sudo: ALL=(ALL) NOPASSWD:ALL
+    # -- Labels to add to the node pool when joining the cluster
+    #labels: "node.kubernetes.io/node=labs"
+    # -- Taints to add to the node pool when joining the cluster
+    #taints: "node.kubernetes.io/node=labs:NoSchedule"
+

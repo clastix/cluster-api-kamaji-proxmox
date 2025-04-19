@@ -1,0 +1,138 @@
+{{- if .Values.cluster.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kamaji.clastix.io/name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-metrics
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  name:  {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-metrics
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+  - name: kube-apiserver-metrics
+    port: 6443
+    protocol: TCP
+    targetPort: 6443
+  - name: kube-controller-manager-metrics
+    port: 10257
+    protocol: TCP
+    targetPort: 10257
+  - name: kube-scheduler-metrics
+    port: 10259
+    protocol: TCP
+    targetPort: 10259
+  selector:
+    kamaji.clastix.io/name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+  type: ClusterIP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: kube-prometheus-stack
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  name:  {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-service-monitor
+  namespace: {{ .Release.Namespace }}
+spec:
+  endpoints:
+  - port: kube-apiserver-metrics
+    scheme: https
+    path: /metrics
+    interval: 15s
+    scrapeTimeout: 10s
+    tlsConfig:
+      insecureSkipVerify: true
+      cert:
+        secret:
+          name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-api-server-kubelet-client-certificate
+          key: apiserver-kubelet-client.crt
+      keySecret:
+        name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-api-server-kubelet-client-certificate
+        key: apiserver-kubelet-client.key
+    metricRelabelings:
+    - action: drop
+      regex: apiserver_request_duration_seconds_bucket;(0.15|0.2|0.3|0.35|0.4|0.45|0.6|0.7|0.8|0.9|1.25|1.5|1.75|2|3|3.5|4|4.5|6|7|8|9|15|25|40|50)
+      sourceLabels:
+      - __name__
+      - le
+    relabelings:
+    - action: replace
+      targetLabel: cluster
+      replacement: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+    - action: replace
+      targetLabel: job
+      replacement: apiserver
+  - port: kube-controller-manager-metrics
+    scheme: https
+    path: /metrics
+    interval: 15s
+    scrapeTimeout: 10s
+    tlsConfig:
+      insecureSkipVerify: true
+      cert:
+        secret:
+          name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-api-server-kubelet-client-certificate
+          key: apiserver-kubelet-client.crt
+      keySecret:
+        name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-api-server-kubelet-client-certificate
+        key: apiserver-kubelet-client.key
+    relabelings:
+    - action: replace
+      targetLabel: cluster
+      replacement: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+    - action: replace
+      targetLabel: job
+      replacement: kube-controller-manager
+  - port: kube-scheduler-metrics
+    scheme: https
+    path: /metrics
+    interval: 15s
+    scrapeTimeout: 10s
+    tlsConfig:
+      insecureSkipVerify: true
+      cert:
+        secret:
+          name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-api-server-kubelet-client-certificate
+          key: apiserver-kubelet-client.crt
+      keySecret:
+        name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-api-server-kubelet-client-certificate
+        key: apiserver-kubelet-client.key
+    relabelings:
+    - action: replace
+      targetLabel: cluster
+      replacement: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+    - action: replace
+      targetLabel: job
+      replacement: kube-scheduler
+  selector:
+    matchLabels:
+      kamaji.clastix.io/name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-metrics
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name:  {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-prometheus-secret-access
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  namespace: {{ .Release.Namespace }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.cluster.metrics.serviceAccount.name }}
+  namespace: {{ .Values.cluster.metrics.serviceAccount.namespace }}
+roleRef:
+  kind: Role
+  name:  {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-prometheus-secret-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name:  {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-prometheus-secret-reader
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  namespace: {{ .Release.Namespace }}
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+{{- end }}

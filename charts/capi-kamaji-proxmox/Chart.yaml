@@ -1,0 +1,29 @@
+name: capi-kamaji-proxmox
+version: 0.0.1
+appVersion: 1.31.4
+description: A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster API
+  and Kamaji.
+icon: https://cluster-api.sigs.k8s.io/images/introduction.svg
+type: application
+apiVersion: v2
+maintainers:
+  - name: Clastix Labs
+    email: authors@clastix.labs
+keywords:
+  - kubernetes
+  - helm
+  - cluster-api
+  - kamaji
+  - proxmox
+home: https://kamaji.clastix.io
+sources:
+  - https://github.com/clastix/cluster-api-kamaji-proxmox
+annotations:
+  artifacthub.io/links: |
+    - name: Clastix Labs
+      url: https://github.com/clastix
+  artifacthub.io/operator: "true"
+  artifacthub.io/operatorCapabilities: "Full Lifecycle"
+  artifacthub.io/changes: |
+    - kind: commit
+      description: Initial commit.

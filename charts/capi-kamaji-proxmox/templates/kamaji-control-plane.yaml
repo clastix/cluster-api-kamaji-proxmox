@@ -1,0 +1,39 @@
+kind: KamajiControlPlane
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
+metadata:
+  name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . | quote }}
+    {{- with .Values.cluster.controlPlane.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  dataStoreName: {{ .Values.cluster.controlPlane.dataStoreName | quote }}
+  addons:
+    coreDNS: {}
+    kubeProxy: {}
+    konnectivity: {}
+  kubelet:
+    cgroupfs: {{ .Values.cluster.controlPlane.kubelet.cgroupfs | quote }}
+    preferredAddressTypes:
+      {{- range .Values.cluster.controlPlane.kubelet.preferredAddressTypes }}
+      - {{ . | quote }}
+      {{- end }}
+  network:
+    serviceAddress: {{ .Values.cluster.controlPlane.network.serviceAddress | quote }}
+    serviceType: {{ .Values.cluster.controlPlane.network.serviceType | quote }}
+    serviceAnnotations:
+      {{- with .Values.cluster.controlPlane.network.serviceAnnotations }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    serviceLabels:
+      {{- with .Values.cluster.controlPlane.network.serviceLabels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    certSANs:
+      {{- range .Values.cluster.controlPlane.network.certSANs }}
+      - {{ . | quote }}
+      {{- end }}
+  version: {{ .Values.cluster.controlPlane.version | quote }}
+  replicas: {{ .Values.cluster.controlPlane.replicas }}

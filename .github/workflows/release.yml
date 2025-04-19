@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags: [ "v*" ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.3.4
+
+      - name: Package Helm chart
+        run: helm package ./charts/capi-kamaji-proxmox
+
+      - name: Publish Helm chart
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          charts_dir: charts
+          charts_url: https://clastix.github.io/charts
+          owner: clastix
+          repository: charts
+          branch: gh-pages
+          target_dir: .
+          commit_username: bsctl
+          commit_email: bsctl@clastix.io

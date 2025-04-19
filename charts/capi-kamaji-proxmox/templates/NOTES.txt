@@ -1,0 +1,13 @@
+Thank you for installing {{ .Chart.Name }} {{ .Chart.Version }}
+
+Your Kubernetes cluster "{{ .Release.Name }}" is being provisioned on Proxmox VE.
+
+To monitor the cluster creation:
+  kubectl get cluster,machines -n {{ .Release.Namespace }}
+
+To access your cluster once ready:
+  kubectl get secret {{ .Release.Name }}-admin-kubeconfig -n {{ .Release.Namespace }} -o jsonpath='{.data.admin\.conf}' | base64 -d > {{ .Release.Name }}.kubeconfig
+  export KUBECONFIG=$PWD/{{ .Release.Name }}.kubeconfig
+  kubectl get nodes
+
+Refer to README.md for more information on how to use the chart.

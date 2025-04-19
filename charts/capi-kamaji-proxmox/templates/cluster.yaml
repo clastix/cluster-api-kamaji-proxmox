@@ -1,0 +1,16 @@
+kind: Cluster
+apiVersion: cluster.x-k8s.io/v1beta1
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . | quote }}
+  name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
+    kind: KamajiControlPlane
+    name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha1
+    kind: ProxmoxCluster
+    name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}

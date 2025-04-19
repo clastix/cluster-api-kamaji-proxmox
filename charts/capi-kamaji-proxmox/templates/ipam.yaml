@@ -1,0 +1,16 @@
+{{- if .Values.ipamProvider.enabled }}
+apiVersion: ipam.cluster.x-k8s.io/v1alpha2
+kind: InClusterIPPool
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . | quote }}
+  name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}-ipam-ip-pool
+  namespace: {{ .Release.Namespace }}
+spec:
+  addresses:
+  {{- range .Values.ipamProvider.ranges }}
+  - {{ . }}
+  {{- end }}
+  prefix: {{ .Values.ipamProvider.prefix }}
+  gateway: {{ .Values.ipamProvider.gateway }}
+{{- end }}

@@ -1,0 +1,27 @@
+kind: ProxmoxCluster
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha1
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ include "cluster-api-kamaji-proxmox.cluster-name" $ | quote }}
+  name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  credentialsRef:
+    name: {{ include "cluster-api-kamaji-proxmox.proxmox-secret-name" . }}
+    namespace: {{ .Release.Namespace }}
+  externalManagedControlPlane: true
+  ipv4Config:
+    addresses:
+    {{- range .Values.cluster.ipv4Config.addresses }}
+    - {{ . }}
+    {{- end }}
+    gateway: {{ .Values.cluster.ipv4Config.gateway }}
+    prefix: {{ .Values.cluster.ipv4Config.prefix }}
+  dnsServers:
+  {{- range .Values.cluster.dnsServers }}
+  - {{ . }}
+  {{- end }}
+  allowedNodes:
+  {{- range .Values.cluster.allowedNodes }}
+  - {{ . }}
+  {{- end }}
