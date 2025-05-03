@@ -73,7 +73,9 @@ A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster A
 | nodePools[0].replicas | int | `1` | Number of worker VMs instances |
 | nodePools[0].sourceNode | string | `"pve"` | Proxmox VE node that hosts the VM template to be used to provision VMs |
 | nodePools[0].storage | string | `"local"` | Proxmox VE storage name for full clone |
-| nodePools[0].templateId | int | `100` | Proxmox VE template ID to clone |
+| nodePools[0].templateId | int | `100` | Proxmox VE template ID to clone (alternatively, use TemplateSelector) |
+| nodePools[0].templateSelector | object | `{"matchTags":["ubuntu-nobe-kube-1.31.4"]}` | Proxmox VE template selector (alternatively, use templateId) |
+| nodePools[0].templateSelector.matchTags | list | `["ubuntu-nobe-kube-1.31.4"]` | Proxmox VE template match tags |
 | nodePools[0].users | list | `[{"name":"clastix","sshAuthorizedKeys":[],"sudo":"ALL=(ALL) NOPASSWD:ALL"}]` | users to create on machines |
 | proxmox.secret | object | `{"name":"proxmox-secret","namespace":""}` | Proxmox VE credentials |
 | proxmox.secret.name | string | `"proxmox-secret"` | The name of an existing credentials secret for Proxmox VE. |
