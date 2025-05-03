@@ -28,8 +28,16 @@ memoryMiB: {{ .nodePool.memoryMiB }}
 numCores: {{ .nodePool.numCores }}
 numSockets: {{ .nodePool.numSockets }}
 sourceNode: {{ .nodePool.sourceNode }}
-templateID: {{ .nodePool.templateId }}
 pool: {{ .nodePool.pool }}
+{{- if .nodePool.templateId }}
+templateID: {{ .nodePool.templateId }}
+{{- else }}
+templateSelector:
+  matchTags:
+  {{- range .nodePool.templateSelector.matchTags }}
+  - {{ . }}
+  {{- end }}
+{{- end -}}
 {{- end -}}
 
 {{/*

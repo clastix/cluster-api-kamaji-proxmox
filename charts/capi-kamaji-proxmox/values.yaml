@@ -110,13 +110,13 @@ nodePools:
       - labs
     # -- Proxmox VE resource pool to use
     pool: ""
-    # -- Proxmox VE template ID to clone
+    # -- Proxmox VE template ID to clone (alternatively, use TemplateSelector)
     templateId: 100
-    # # -- Proxmox VE template selector
-    # TemplateSelector:
-    #   # -- Proxmox VE template match tags
-    #   matchTags:
-    #     - "ubuntu-nobe-kube-1.31.4"
+    # -- Proxmox VE template selector (alternatively, use templateId)
+    templateSelector:
+      # -- Proxmox VE template match tags
+      matchTags:
+      - "ubuntu-nobe-kube-1.31.4"
     # -- Proxmox VE default network for VMs
     network:
       # -- Proxmox VE network bridge to use
