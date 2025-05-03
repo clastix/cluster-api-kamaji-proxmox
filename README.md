@@ -53,8 +53,6 @@ The implementation uses hash-suffixed templates, `ProxmoxMachineTemplate` and `K
 2. Run: `helm upgrade my-cluster ./cluster-api-kamaji-proxmox`
 3. Cluster API automatically replaces nodes using the new configuration
 
-
-
 ### Cluster Autoscaler Integration
 
 The chart includes support for enabling the Cluster Autoscaler for each node pool. This feature allows you to mark node pool machines to be autoscaled. However, you still need to install the Cluster Autoscaler separately.
@@ -122,7 +120,7 @@ export PROXMOX_TOKEN: "clastix@pam!capi"        # The Proxmox VE TokenID for aut
 export PROXMOX_SECRET: "REDACTED"               # The secret associated with the TokenID
 ```
 
-Then you can leave the chart to create the secret for you by filling the proper fields in your `values.yaml` or you can create the secret manually.
+Then you create the secret manually:
 
 ```bash
 # Create the proxmox secret for Cluster API
@@ -130,9 +128,9 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
-  name: proxmox-secret
+  name: sample-proxmox-secret
   labels:
-    cluster.x-k8s.io/cluster-name: "my-cluster"
+    cluster.x-k8s.io/cluster-name: "sample"
 stringData:
   url: "${PROXMOX_URL}"
   token: "${PROXMOX_TOKEN}"
@@ -148,8 +146,9 @@ and reference it in your `values.yaml`:
 # Using existing secrets
 proxmox:
   secret:
-    create: false
-    name: proxmox-secret
+    name: sample-proxmox-secret
+    # -- omitting namespace will use the release namespace
+    namespace: default
 ```
 
 ## Usage
