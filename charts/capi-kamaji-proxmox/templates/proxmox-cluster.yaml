@@ -7,8 +7,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   credentialsRef:
-    name: {{ include "cluster-api-kamaji-proxmox.proxmox-secret-name" . }}
-    namespace: {{ .Release.Namespace }}
+    name: {{ .Values.proxmox.secret.name }}
+    namespace: {{ .Values.proxmox.secret.namespace | default .Release.Namespace }}
   externalManagedControlPlane: true
   ipv4Config:
     addresses:
