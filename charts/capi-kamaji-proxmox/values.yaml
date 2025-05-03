@@ -1,16 +1,10 @@
 proxmox:
-  # -- Create a secret with the Proxmox VE credentials
+  # -- Proxmox VE credentials
   secret:
-    # -- Specifies whether credentials secret should be created from config values
-    create: true
-    # -- The name of an existing credentials secret for Proxmox VE. 
+    # -- The name of an existing credentials secret for Proxmox VE.
     name: proxmox-secret
-  # -- Proxmox VE hostname or IP address
-  url: https://proxmox.pve:8006
-  # -- Proxmox VE TokenID for authentication
-  tokenId: 'clastix@pam!capi'
-  # -- Proxmox VE TokenSecret for authentication
-  tokenSecret: READCTED
+    # -- The namespace of the existing credentials secret for Proxmox VE. When null or empty the release namespace will be used.
+    namespace: ""
 
 ipamProvider:
   # -- Enable the IPAMProvider usage
