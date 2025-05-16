@@ -49,6 +49,7 @@ A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster A
 | ipamProvider.gateway | string | `"192.168.100.1"` | IPAMProvider gateway |
 | ipamProvider.prefix | string | `"24"` | IPAMProvider prefix |
 | ipamProvider.ranges | list | `["192.168.100.10-192.168.100.250"]` | IPAMProvider ranges |
+| nodePools[0].additionalCloudInitFiles | string | `"#cloud-config\ntimezone: Europe/Rome\n"` | Additional cloud-init files to pass to the machines |
 | nodePools[0].allowedNodes | list | `["labs"]` | Proxmox VE nodes used for VM deployments |
 | nodePools[0].autoscaling.enabled | bool | `false` | Enable autoscaling |
 | nodePools[0].autoscaling.labels.autoscaling | string | `"enabled"` | Labels to use for autoscaling: make sure to use the same labels on the autoscaler configuration |
@@ -76,7 +77,11 @@ A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster A
 | nodePools[0].templateId | int | `100` | Proxmox VE template ID to clone (alternatively, use TemplateSelector) |
 | nodePools[0].templateSelector | object | `{"matchTags":["ubuntu-nobe-kube-1.31.4"]}` | Proxmox VE template selector (alternatively, use templateId) |
 | nodePools[0].templateSelector.matchTags | list | `["ubuntu-nobe-kube-1.31.4"]` | Proxmox VE template match tags |
-| nodePools[0].users | list | `[{"name":"clastix","sshAuthorizedKeys":[],"sudo":"ALL=(ALL) NOPASSWD:ALL"}]` | users to create on machines |
+| nodePools[0].users | list | `[{"lockPassword":true,"name":"ubuntu","shell":"/bin/bash","sshAuthorizedKeys":[],"sudo":"ALL=(ALL) NOPASSWD:ALL"}]` | users to create on machines |
+| nodePools[0].users[0].lockPassword | bool | `true` | Lock login password |
+| nodePools[0].users[0].shell | string | `"/bin/bash"` | SSH shell to use |
+| nodePools[0].users[0].sshAuthorizedKeys | list | `[]` | SSH public key to add |
+| nodePools[0].users[0].sudo | string | `"ALL=(ALL) NOPASSWD:ALL"` | sudoers configuration |
 | proxmox.secret | object | `{"name":"proxmox-secret","namespace":""}` | Proxmox VE credentials |
 | proxmox.secret.name | string | `"proxmox-secret"` | The name of an existing credentials secret for Proxmox VE. |
 | proxmox.secret.namespace | string | `""` | The namespace of the existing credentials secret for Proxmox VE. When null or empty the release namespace will be used. |
