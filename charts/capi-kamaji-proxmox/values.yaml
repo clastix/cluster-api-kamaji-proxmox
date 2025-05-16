@@ -149,13 +149,21 @@ nodePools:
     # -- Number of sockets to allocate to worker VMs
     numSockets: 2
     # -- Additional cloud-init files to pass to the machines
-    # additionalCloudInitFiles: |
-    #   #cloud-config
-    #   timezone: Europe/Rome
+    additionalCloudInitFiles: |
+      #cloud-config
+      timezone: Europe/Rome
     # -- users to create on machines
     users:
-    - name: clastix
+    - name: ubuntu
+      # -- SSH shell to use
+      shell: /bin/bash
+      # -- SSH password to use. Use mkpasswd -m sha-512 to generate the password
+      # passwd: "$6$E0UW ..."
+      # -- Lock login password
+      lockPassword: true
+      # -- SSH public key to add
       sshAuthorizedKeys: []
+      # -- sudoers configuration
       sudo: ALL=(ALL) NOPASSWD:ALL
     # -- Labels to add to the node pool when joining the cluster
     #labels: "node.kubernetes.io/node=labs"
