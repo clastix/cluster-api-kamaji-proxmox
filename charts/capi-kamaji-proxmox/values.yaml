@@ -35,6 +35,25 @@ cluster:
       kubeProxy: {}
       # -- KamajiControlPlane konnectivity configuration
       konnectivity: {}
+    # -- Configure how KamajiControlPlane deployment should be done
+    deployment:
+      # -- Additional metadata as labels and annotations
+      additionalMetadata: 
+        labels: {}
+        annotations: {}
+      # -- Pods Additional metadata as labels and annotations
+      podAdditionalMetadata:
+        labels: {}
+        annotations: {}
+      # -- Affinity scheduling rules
+      affinity: {}
+      # -- Tolerations for scheduling
+      tolerations: []
+      # -- NodeSelector for scheduling
+      nodeSelector:
+        kubernetes.io/os: linux
+      # -- TopologySpreadConstraints for scheduling
+      topologySpreadConstraints: []
     kubelet:
       # -- kubelet cgroupfs configuration
       cgroupfs: systemd
@@ -52,7 +71,7 @@ cluster:
       # serviceAddress: "10.10.10.120"
       # When using MetalLB to expose the Control Plane, set as the following to specify a specific IP address for the service
       # serviceAnnotations:
-      #   metallb.universe.tf/loadBalancerIPs: "10.10.10.120"
+      #   metallb.io/loadBalancerIPs: "10.10.10.120"
       # -- Labels to use for the control plane service
       serviceLabels: {}
       # -- List of additional Subject Alternative Names to use for the API Server serving certificate

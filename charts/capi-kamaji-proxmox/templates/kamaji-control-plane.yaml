@@ -14,6 +14,41 @@ spec:
     coreDNS: {}
     kubeProxy: {}
     konnectivity: {}
+  deployment:
+    additionalMetadata:
+      labels:
+        {{- with .Values.cluster.controlPlane.deployment.additionalMetadata.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.cluster.controlPlane.deployment.additionalMetadata.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    podAdditionalMetadata:
+      labels:
+        {{- with .Values.cluster.controlPlane.deployment.podAdditionalMetadata.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.cluster.controlPlane.deployment.podAdditionalMetadata.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    affinity:
+      {{- with .Values.cluster.controlPlane.deployment.affinity }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    tolerations:
+      {{- with .Values.cluster.controlPlane.deployment.tolerations }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    nodeSelector:
+      {{- with .Values.cluster.controlPlane.deployment.nodeSelector }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    topologySpreadConstraints:
+      {{- with .Values.cluster.controlPlane.deployment.topologySpreadConstraints }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   kubelet:
     cgroupfs: {{ .Values.cluster.controlPlane.kubelet.cgroupfs | quote }}
     preferredAddressTypes:
