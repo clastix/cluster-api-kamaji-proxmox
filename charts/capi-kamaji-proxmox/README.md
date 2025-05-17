@@ -21,6 +21,10 @@ A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster A
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | cluster.allowedNodes | list | `["labs"]` | Proxmox VE nodes used for VM deployments |
+| cluster.clusterNetwork.apiServerPort | int | `6443` | API Server port |
+| cluster.clusterNetwork.pods.cidrBlocks | list | `["10.93.0.0/16"]` | CIDR range for pods |
+| cluster.clusterNetwork.serviceDomain | string | `"cluster.local"` | Service Domain for cluster DNS |
+| cluster.clusterNetwork.services.cidrBlocks | list | `["10.96.0.0/16"]` | CIDR range for services |
 | cluster.controlPlane.addons.coreDNS | object | `{}` | KamajiControlPlane coreDNS configuration |
 | cluster.controlPlane.addons.konnectivity | object | `{}` | KamajiControlPlane konnectivity configuration |
 | cluster.controlPlane.addons.kubeProxy | object | `{}` | KamajiControlPlane kube-proxy configuration |
