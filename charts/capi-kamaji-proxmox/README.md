@@ -25,6 +25,13 @@ A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster A
 | cluster.controlPlane.addons.konnectivity | object | `{}` | KamajiControlPlane konnectivity configuration |
 | cluster.controlPlane.addons.kubeProxy | object | `{}` | KamajiControlPlane kube-proxy configuration |
 | cluster.controlPlane.dataStoreName | string | `"default"` | KamajiControlPlane dataStoreName |
+| cluster.controlPlane.deployment | object | `{"additionalMetadata":{"annotations":{},"labels":{}},"affinity":{},"nodeSelector":{"kubernetes.io/os":"linux"},"podAdditionalMetadata":{"annotations":{},"labels":{}},"tolerations":[],"topologySpreadConstraints":[]}` | Configure how KamajiControlPlane deployment should be done |
+| cluster.controlPlane.deployment.additionalMetadata | object | `{"annotations":{},"labels":{}}` | Additional metadata as labels and annotations |
+| cluster.controlPlane.deployment.affinity | object | `{}` | Affinity scheduling rules |
+| cluster.controlPlane.deployment.nodeSelector | object | `{"kubernetes.io/os":"linux"}` | NodeSelector for scheduling |
+| cluster.controlPlane.deployment.podAdditionalMetadata | object | `{"annotations":{},"labels":{}}` | Pods Additional metadata as labels and annotations |
+| cluster.controlPlane.deployment.tolerations | list | `[]` | Tolerations for scheduling |
+| cluster.controlPlane.deployment.topologySpreadConstraints | list | `[]` | TopologySpreadConstraints for scheduling |
 | cluster.controlPlane.kubelet.cgroupfs | string | `"systemd"` | kubelet cgroupfs configuration |
 | cluster.controlPlane.kubelet.preferredAddressTypes | list | `["InternalIP","ExternalIP","Hostname"]` | kubelet preferredAddressTypes order |
 | cluster.controlPlane.labels | object | `{"cni":"calico"}` | Labels to add to the control plane |
