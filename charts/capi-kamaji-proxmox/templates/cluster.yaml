@@ -6,6 +6,33 @@ metadata:
   name: {{ include "cluster-api-kamaji-proxmox.cluster-name" . }}
   namespace: {{ .Release.Namespace }}
 spec:
+  {{- if .Values.cluster.clusterNetwork }}
+  clusterNetwork:
+    {{- if .Values.cluster.clusterNetwork.apiServerPort }}
+    apiServerPort: {{ .apiServerPort | default 6443 }}
+    {{- end }}
+    {{- if .Values.cluster.clusterNetwork.pods }}
+    {{- if .Values.cluster.clusterNetwork.pods.cidrBlocks }}
+    pods:
+      cidrBlocks:
+        {{- range .Values.cluster.clusterNetwork.pods.cidrBlocks }}
+        - {{ . | quote }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.cluster.clusterNetwork.services }}
+    {{- if .Values.cluster.clusterNetwork.services.cidrBlocks }}
+    services:
+      cidrBlocks:
+        {{- range .Values.cluster.clusterNetwork.services.cidrBlocks }}
+        - {{ . | quote }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.cluster.clusterNetwork.serviceDomain }}
+    serviceDomain: {{ .Values.cluster.clusterNetwork.serviceDomain | default "cluster.local" | quote }}
+    {{- end }}
+  {{- end }}
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1alpha1
     kind: KamajiControlPlane

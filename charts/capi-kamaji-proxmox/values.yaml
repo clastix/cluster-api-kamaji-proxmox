@@ -20,6 +20,17 @@ ipamProvider:
 cluster:
   # -- Cluster name. If unset, the release name will be used
   name: ""
+  clusterNetwork:
+    # -- API Server port
+    apiServerPort: 6443
+    # -- Service Domain for cluster DNS
+    serviceDomain: cluster.local
+    pods:
+      # -- CIDR range for pods
+      cidrBlocks: ["10.93.0.0/16"]
+    services: 
+      # -- CIDR range for services
+      cidrBlocks: ["10.96.0.0/16"]
   controlPlane:
     # -- Labels to add to the control plane
     labels:
