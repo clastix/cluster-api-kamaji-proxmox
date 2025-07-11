@@ -11,9 +11,17 @@ metadata:
 spec:
   dataStoreName: {{ .Values.cluster.controlPlane.dataStoreName | quote }}
   addons:
-    coreDNS: {}
-    kubeProxy: {}
-    konnectivity: {}
+    {{- with .Values.cluster.controlPlane.addons }}
+    coreDNS: {{ if gt (len .coreDNS) 0 }}
+      {{- toYaml .coreDNS | nindent 6 }}
+    {{- else }}{}{{ end }}
+    kubeProxy: {{ if gt (len .kubeProxy) 0 }}
+      {{- toYaml .kubeProxy | nindent 6 }}
+    {{- else }}{}{{ end }}
+    konnectivity: {{ if gt (len .konnectivity) 0 }}
+      {{- toYaml .konnectivity | nindent 6 }}
+    {{- else }}{}{{ end }}
+    {{- end }}
   deployment:
     additionalMetadata:
       labels:
