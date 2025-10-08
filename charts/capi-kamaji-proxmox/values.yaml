@@ -39,12 +39,18 @@ cluster:
     replicas: 2
     # -- KamajiControlPlane dataStoreName
     dataStoreName: default
+    # Set to null or remove the key entirely to disable the addon
+    # addons:
+    #   coreDNS: {}
+    #   kubeProxy: {}
+    #   konnectivity: null
+    # -- Configure addons for the control plane
     addons:
-      # -- KamajiControlPlane coreDNS configuration. Set to {} for default configuration, or specify custom config. Remove entirely to disable.
+      # -- CoreDNS addon configuration
       coreDNS: {}
-      # -- KamajiControlPlane kube-proxy configuration. Set to {} for default configuration, or specify custom config. Remove entirely to disable.
+      # -- Kube-proxy addon configuration
       kubeProxy: {}
-      # -- KamajiControlPlane konnectivity configuration. Set to {} for default configuration, or specify custom config. Remove entirely to disable.
+      # -- Konnectivity addon configuration
       konnectivity: {}
     # -- Configure how KamajiControlPlane deployment should be done
     deployment:

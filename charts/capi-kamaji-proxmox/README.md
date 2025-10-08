@@ -1,6 +1,6 @@
 # capi-kamaji-proxmox
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.31.4](https://img.shields.io/badge/AppVersion-1.31.4-informational?style=flat-square)
+![Version: 0.0.4](https://img.shields.io/badge/Version-0.0.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.31.4](https://img.shields.io/badge/AppVersion-1.31.4-informational?style=flat-square)
 
 A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster API and Kamaji.
 
@@ -25,9 +25,10 @@ A Helm chart for deploying a Kamaji Tenant Cluster on Proxmox VE using Cluster A
 | cluster.clusterNetwork.pods.cidrBlocks | list | `["10.93.0.0/16"]` | CIDR range for pods |
 | cluster.clusterNetwork.serviceDomain | string | `"cluster.local"` | Service Domain for cluster DNS |
 | cluster.clusterNetwork.services.cidrBlocks | list | `["10.96.0.0/16"]` | CIDR range for services |
-| cluster.controlPlane.addons.coreDNS | object | `{}` | KamajiControlPlane coreDNS configuration. Set to {} for default configuration, or specify custom config. Remove entirely to disable. |
-| cluster.controlPlane.addons.konnectivity | object | `{}` | KamajiControlPlane konnectivity configuration. Set to {} for default configuration, or specify custom config. Remove entirely to disable. |
-| cluster.controlPlane.addons.kubeProxy | object | `{}` | KamajiControlPlane kube-proxy configuration. Set to {} for default configuration, or specify custom config. Remove entirely to disable. |
+| cluster.controlPlane.addons | object | `{"coreDNS":{},"konnectivity":{},"kubeProxy":{}}` | Configure addons for the control plane |
+| cluster.controlPlane.addons.coreDNS | object | `{}` | CoreDNS addon configuration |
+| cluster.controlPlane.addons.konnectivity | object | `{}` | Konnectivity addon configuration |
+| cluster.controlPlane.addons.kubeProxy | object | `{}` | Kube-proxy addon configuration |
 | cluster.controlPlane.dataStoreName | string | `"default"` | KamajiControlPlane dataStoreName |
 | cluster.controlPlane.deployment | object | `{"additionalMetadata":{"annotations":{},"labels":{}},"affinity":{},"nodeSelector":{"kubernetes.io/os":"linux"},"podAdditionalMetadata":{"annotations":{},"labels":{}},"tolerations":[],"topologySpreadConstraints":[]}` | Configure how KamajiControlPlane deployment should be done |
 | cluster.controlPlane.deployment.additionalMetadata | object | `{"annotations":{},"labels":{}}` | Additional metadata as labels and annotations |
